@@ -49,6 +49,8 @@ java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples
 - `examples/12-ProjetoHierarquico.npas` - Projeto com módulos complexos
 - `examples/13-MenuInterativo.npas` - Demonstração de menu interativo
 - `examples/14-EntradaUsuario.npas` - Entrada do usuário (funciona melhor em modo interativo)
+- `examples/15-ConcatenacaoStrings.npas` - Concatenação de strings com operador +
+- `examples/16-ExemploOriginal.npas` - Exemplo simples de concatenação
 
 ## Funcionalidades
 
@@ -58,6 +60,7 @@ java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples
 - **Entrada/Saída**: `WriteLn`, `ReadLn`, `showMenu`
 - **Estruturas de Controle**: `if`, `while`, `for`
 - **Funções**: Declaração e chamada de funções personalizadas
+- **Concatenação de Strings**: Operador `+` para concatenar strings e converter tipos automaticamente
 
 ## Notas sobre ReadLn
 
@@ -69,6 +72,38 @@ java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples
 
 # Para testes automatizados
 printf "Jessie\n30\n" | java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples/14-EntradaUsuario.npas
+```
+
+## Concatenação de Strings
+
+O NeoObjectPascal suporta concatenação de strings usando o operador `+`. O sistema automaticamente converte tipos quando necessário:
+
+```pascal
+var nome: String;
+var idade: Integer;
+var mensagem: String;
+begin
+    nome := "João";
+    idade := 25;
+    
+    // Concatenação string + string
+    mensagem := nome + " Silva";
+    
+    // Concatenação string + número (conversão automática)
+    mensagem := nome + " tem " + idade + " anos";
+    
+    WriteLn(mensagem); // Saída: João tem 25 anos
+end.
+```
+
+### Exemplos de Concatenação
+
+```bash
+# Teste do exemplo original
+printf "Alvaro\n" | java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples/16-ExemploOriginal.npas
+
+# Teste completo de concatenação
+printf "João\nSilva\n25\n" | java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples/15-ConcatenacaoStrings.npas
 ```
 
 ## Documentação e Exemplos

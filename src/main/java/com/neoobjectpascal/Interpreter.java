@@ -284,6 +284,11 @@ public class Interpreter extends NeoObjectPascalParserBaseVisitor<Object> {
         } else if (ctx.DIV() != null) {
             return (Integer) left / (Integer) right;
         } else if (ctx.ADD() != null) {
+            // Se pelo menos um dos operandos for String, faz concatenação
+            if (left instanceof String || right instanceof String) {
+                return String.valueOf(left) + String.valueOf(right);
+            }
+            // Caso contrário, faz soma aritmética
             return (Integer) left + (Integer) right;
         } else if (ctx.SUB() != null) {
             return (Integer) left - (Integer) right;
