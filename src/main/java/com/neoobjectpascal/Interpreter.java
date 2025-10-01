@@ -22,13 +22,19 @@ public class Interpreter extends NeoObjectPascalParserBaseVisitor<Object> {
     private final Map<String, Function> functions = new HashMap<>();
     private final String baseDirectory;
     private Scanner inputScanner;
+    private boolean suppressWarnings;
     
     public Interpreter() {
-        this("./");
+        this("./", false);
     }
     
     public Interpreter(String baseDirectory) {
+        this(baseDirectory, false);
+    }
+    
+    public Interpreter(String baseDirectory, boolean suppressWarnings) {
         this.baseDirectory = baseDirectory;
+        this.suppressWarnings = suppressWarnings;
         this.inputScanner = new Scanner(System.in);
     }
 
@@ -453,7 +459,9 @@ public class Interpreter extends NeoObjectPascalParserBaseVisitor<Object> {
             // Carrega o recurso do classpath
             InputStream resourceStream = getClass().getResourceAsStream(resourcePath);
             if (resourceStream == null) {
-                System.err.println("Biblioteca interna não encontrada: " + modulePath);
+                if (!suppressWarnings) {
+                    System.err.println("Biblioteca interna não encontrada: " + modulePath);
+                }
                 return;
             }
             
@@ -462,6 +470,17 @@ public class Interpreter extends NeoObjectPascalParserBaseVisitor<Object> {
             NeoObjectPascalLexer lexer = new NeoObjectPascalLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             NeoObjectPascalParser parser = new NeoObjectPascalParser(tokens);
+            
+            // Suppress warnings if requested
+            if (suppressWarnings) {
+                lexer.removeErrorListeners();
+                parser.removeErrorListeners();
+                // Add a silent error listener that does nothing
+                org.antlr.v4.runtime.BaseErrorListener silentListener = new org.antlr.v4.runtime.BaseErrorListener();
+                lexer.addErrorListener(silentListener);
+                parser.addErrorListener(silentListener);
+            }
+            
             ParseTree tree = parser.program();
             
             // Interpreta a biblioteca interna
@@ -471,7 +490,9 @@ public class Interpreter extends NeoObjectPascalParserBaseVisitor<Object> {
             resourceStream.close();
             
         } catch (IOException e) {
-            System.err.println("Erro ao carregar biblioteca interna " + modulePath + ": " + e.getMessage());
+            if (!suppressWarnings) {
+                System.err.println("Erro ao carregar biblioteca interna " + modulePath + ": " + e.getMessage());
+            }
         }
     }
 }
