@@ -54,7 +54,9 @@ java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples
 
 ## Funcionalidades
 
+- **Sistema Híbrido NeoObjectPascal-Java**: Execução de código Java dentro de funções Pascal
 - **Sistema de Módulos Hierárquicos**: Importação com `uses helpers.matematica, lib.core.calculadora`
+- **Bibliotecas Internas**: Sistema `uses internal.*` com bibliotecas matemáticas, strings, data/hora e mais
 - **Processamento de Dados**: Suporte nativo para JSON e CSV
 - **Programação Funcional**: Pipeline operators (`|>`)
 - **Entrada/Saída**: `WriteLn`, `ReadLn`, `showMenu`
@@ -104,6 +106,109 @@ printf "Alvaro\n" | java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-depen
 
 # Teste completo de concatenação
 printf "João\nSilva\n25\n" | java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples/15-ConcatenacaoStrings.npas
+```
+
+## Sistema Híbrido NeoObjectPascal-Java
+
+O NeoObjectPascal introduz um sistema revolucionário que permite a execução de código Java diretamente dentro de funções Pascal:
+
+### Sintaxe Básica
+
+```pascal
+function exemplo(): String
+begin
+    return java:() {
+        return "Código Java executado dentro do Pascal!";
+    };
+end;
+```
+
+### Com Parâmetros
+
+```pascal
+function calcular(a, b): Integer
+begin
+    return java:(a, b) {
+        Integer x = (Integer)param0;
+        Integer y = (Integer)param1;
+        return x * x + y * y;
+    };
+end;
+
+begin
+    WriteLn("3² + 4² = ", calcular(3, 4)); // Saída: 25
+end.
+```
+
+### Uso Direto em Expressões
+
+```pascal
+begin
+    WriteLn("Data atual: ", java:() {
+        java.time.LocalDateTime agora = java.time.LocalDateTime.now();
+        java.time.format.DateTimeFormatter formatter =
+            java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return agora.format(formatter);
+    });
+end.
+```
+
+### Exemplos do Sistema Híbrido
+
+```bash
+# Teste básico
+java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples/23-DebugJava.npas
+
+# Função com parâmetros
+java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples/25-JavaComParametros.npas
+
+# Sistema híbrido completo
+java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples/27-SistemaHibridoFinal.npas
+```
+
+## Bibliotecas Internas
+
+O NeoObjectPascal inclui bibliotecas internas que fornecem funcionalidades prontas para uso:
+
+### Bibliotecas Disponíveis
+
+- **`internal.math`**: Funções matemáticas (abs, max, min, square, factorial, fibonacci, etc.)
+- **`internal.string`**: Manipulação de strings (isEmpty, quote, repeat, join, inStr, etc.)
+- **`internal.datetime`**: Data e hora (getCurrentYear, formatDate, isLeapYear, getAge, etc.)
+- **`internal.collections`**: Arrays e coleções (implementação conceitual)
+- **`internal.file`**: Operações com arquivos (implementação conceitual)
+
+### Exemplo de Uso
+
+```pascal
+uses internal.math, internal.string, internal.datetime;
+
+var numero: Integer;
+var texto: String;
+
+begin
+    numero := -15;
+    WriteLn("Valor absoluto: ", abs(numero));
+    WriteLn("Quadrado de 5: ", square(5));
+    
+    texto := "NeoObjectPascal";
+    WriteLn("Entre aspas: ", quote(texto));
+    WriteLn("Repetir '*' 3 vezes: ", repeat("*", 3));
+    
+    WriteLn("Ano atual: ", getCurrentYear());
+    WriteLn("Data atual: ", getCurrentDate());
+    WriteLn("2024 é bissexto? ", isLeapYear(2024));
+end.
+```
+
+### Testando as Bibliotecas
+
+```bash
+# Teste simples
+java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples/18-TesteSimples.npas
+
+# Teste completo
+java -jar target/neoobjectpascal-1.0-SNAPSHOT-jar-with-dependencies.jar examples/19-TesteCompleto.npas
 ```
 
 ## Documentação e Exemplos

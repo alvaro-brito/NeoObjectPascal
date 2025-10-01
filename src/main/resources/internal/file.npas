@@ -1,0 +1,213 @@
+{ Biblioteca de Arquivos Interna do NeoObjectPascal }
+{ Funções para trabalhar com arquivos e diretórios }
+
+function getFileExtension(filename): String;
+var lastDot: Integer;
+begin
+    { Implementação conceitual - extrai extensão do arquivo }
+    { Por enquanto retorna uma extensão padrão }
+    return ".txt";
+end;
+
+function getFileName(filepath): String;
+begin
+    { Implementação conceitual - extrai nome do arquivo do caminho }
+    return filepath;
+end;
+
+function getFileNameWithoutExtension(filepath): String;
+begin
+    { Implementação conceitual - nome sem extensão }
+    return filepath;
+end;
+
+function getDirectoryPath(filepath): String;
+begin
+    { Implementação conceitual - extrai diretório do caminho }
+    return "./";
+end;
+
+function joinPath(path1, path2): String;
+begin
+    return path1 + "/" + path2;
+end;
+
+function joinPath3(path1, path2, path3): String;
+begin
+    return path1 + "/" + path2 + "/" + path3;
+end;
+
+function isAbsolutePath(path): Boolean;
+begin
+    { Implementação conceitual - verifica se é caminho absoluto }
+    return false;
+end;
+
+function isRelativePath(path): Boolean;
+begin
+    return isAbsolutePath(path) = false;
+end;
+
+function normalizePath(path): String;
+begin
+    { Implementação conceitual - normaliza separadores de caminho }
+    return path;
+end;
+
+function getParentDirectory(path): String;
+begin
+    { Implementação conceitual - obtém diretório pai }
+    return "./";
+end;
+
+function isValidFilename(filename): Boolean;
+begin
+    { Implementação conceitual - valida nome de arquivo }
+    if filename = "" then
+        return false;
+    { Verificações adicionais seriam implementadas aqui }
+    return true;
+end;
+
+function sanitizeFilename(filename): String;
+begin
+    { Implementação conceitual - remove caracteres inválidos }
+    return filename;
+end;
+
+function getFileSize(filepath): Integer;
+begin
+    { Implementação conceitual - retorna tamanho do arquivo em bytes }
+    return 0;
+end;
+
+function fileExists(filepath): Boolean;
+begin
+    { Implementação conceitual - verifica se arquivo existe }
+    return false;
+end;
+
+function directoryExists(dirpath): Boolean;
+begin
+    { Implementação conceitual - verifica se diretório existe }
+    return false;
+end;
+
+function isFile(path): Boolean;
+begin
+    { Implementação conceitual - verifica se é arquivo }
+    return false;
+end;
+
+function isDirectory(path): Boolean;
+begin
+    { Implementação conceitual - verifica se é diretório }
+    return false;
+end;
+
+function createTempFilename(prefix, extension): String;
+begin
+    return prefix + "_temp_" + getCurrentDateTime() + extension;
+end;
+
+function getCommonFileExtensions(): String;
+begin
+    return ".txt,.csv,.json,.xml,.html,.css,.js,.java,.pas,.npas";
+end;
+
+function isTextFile(filename): Boolean;
+var ext: String;
+begin
+    ext := getFileExtension(filename);
+    if ext = ".txt" then return true;
+    if ext = ".csv" then return true;
+    if ext = ".json" then return true;
+    if ext = ".xml" then return true;
+    if ext = ".html" then return true;
+    if ext = ".css" then return true;
+    if ext = ".js" then return true;
+    if ext = ".java" then return true;
+    if ext = ".pas" then return true;
+    if ext = ".npas" then return true;
+    return false;
+end;
+
+function isBinaryFile(filename): Boolean;
+begin
+    return isTextFile(filename) = false;
+end;
+
+function getFileTypeDescription(filename): String;
+var ext: String;
+begin
+    ext := getFileExtension(filename);
+    if ext = ".txt" then return "Arquivo de Texto";
+    if ext = ".csv" then return "Arquivo CSV";
+    if ext = ".json" then return "Arquivo JSON";
+    if ext = ".xml" then return "Arquivo XML";
+    if ext = ".html" then return "Arquivo HTML";
+    if ext = ".css" then return "Arquivo CSS";
+    if ext = ".js" then return "Arquivo JavaScript";
+    if ext = ".java" then return "Arquivo Java";
+    if ext = ".pas" then return "Arquivo Pascal";
+    if ext = ".npas" then return "Arquivo NeoObjectPascal";
+    if ext = ".pdf" then return "Arquivo PDF";
+    if ext = ".doc" then return "Documento Word";
+    if ext = ".xls" then return "Planilha Excel";
+    if ext = ".zip" then return "Arquivo Compactado";
+    if ext = ".jpg" then return "Imagem JPEG";
+    if ext = ".png" then return "Imagem PNG";
+    if ext = ".gif" then return "Imagem GIF";
+    if ext = ".mp3" then return "Arquivo de Audio";
+    if ext = ".mp4" then return "Arquivo de Video";
+    return "Arquivo Desconhecido";
+end;
+
+function formatFileSize(sizeInBytes): String;
+begin
+    if sizeInBytes < 1024 then
+        return sizeInBytes + " bytes";
+    if sizeInBytes < 1048576 then
+        return (sizeInBytes / 1024) + " KB";
+    if sizeInBytes < 1073741824 then
+        return (sizeInBytes / 1048576) + " MB";
+    return (sizeInBytes / 1073741824) + " GB";
+end;
+
+function generateBackupFilename(originalFilename): String;
+var timestamp: String;
+begin
+    timestamp := getCurrentDateTime();
+    return originalFilename + ".backup." + timestamp;
+end;
+
+function isHiddenFile(filename): Boolean;
+begin
+    { Implementação conceitual - verifica se arquivo está oculto }
+    { Em sistemas Unix, arquivos que começam com '.' são ocultos }
+    return false;
+end;
+
+function getFilePermissions(filepath): String;
+begin
+    { Implementação conceitual - retorna permissões do arquivo }
+    return "rw-r--r--";
+end;
+
+function isReadable(filepath): Boolean;
+begin
+    { Implementação conceitual - verifica se arquivo é legível }
+    return true;
+end;
+
+function isWritable(filepath): Boolean;
+begin
+    { Implementação conceitual - verifica se arquivo é gravável }
+    return true;
+end;
+
+function isExecutable(filepath): Boolean;
+begin
+    { Implementação conceitual - verifica se arquivo é executável }
+    return false;
+end;

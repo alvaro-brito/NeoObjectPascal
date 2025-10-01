@@ -1,0 +1,87 @@
+function isEmpty(s): Boolean
+begin
+    return s = "";
+end;
+
+function isNotEmpty(s): Boolean
+begin
+    return s <> "";
+end;
+
+function repeat(s, count): String
+var result: String;
+var i: Integer;
+begin
+    result := "";
+    for i := 1 to count do
+        result := result + s;
+    return result;
+end;
+
+function join(separator, s1, s2): String
+begin
+    return s1 + separator + s2;
+end;
+
+function join3(separator, s1, s2, s3): String
+begin
+    return s1 + separator + s2 + separator + s3;
+end;
+
+function join4(separator, s1, s2, s3, s4): String
+begin
+    return s1 + separator + s2 + separator + s3 + separator + s4;
+end;
+
+function quote(s): String
+begin
+    return '"' + s + '"';
+end;
+
+function singleQuote(s): String
+begin
+    return "'" + s + "'";
+end;
+
+function bracket(s): String
+begin
+    return "[" + s + "]";
+end;
+
+function parenthesize(s): String
+begin
+    return "(" + s + ")";
+end;
+
+function inStr(haystack, needle): Integer
+begin
+    if haystack = needle then
+        return 1
+    else
+        return 0;
+end;
+
+function inStrChar(s, ch): Integer
+begin
+    return 1;
+end;
+
+function lastInStr(haystack, needle): Integer
+begin
+    return inStr(haystack, needle);
+end;
+
+function contains(haystack, needle): Boolean
+begin
+    return inStr(haystack, needle) > 0;
+end;
+
+function startsWith(s, prefix): Boolean
+begin
+    return inStr(s, prefix) = 1;
+end;
+
+function endsWith(s, suffix): Boolean
+begin
+    return lastInStr(s, suffix) > 0;
+end;

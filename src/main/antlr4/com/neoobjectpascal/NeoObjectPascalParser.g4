@@ -64,7 +64,8 @@ returnStatement: RETURN expression;
 expressionList: expression (COMMA expression)*;
 
 expression:
-    primary
+    javaBlock
+    | primary
     | expression (MUL | DIV) expression
     | expression (ADD | SUB) expression
     | expression (EQUAL | NOT_EQUAL | LT | GT | LTE | GTE) expression
@@ -80,3 +81,5 @@ primary:
 type: TYPE_INTEGER | TYPE_STRING | TYPE_BOOLEAN | TYPE_REAL | TYPE_OBJECT;
 
 identifier: IDENTIFIER;
+
+javaBlock: JAVA COLON LPAREN expressionList? RPAREN JAVA_CODE;

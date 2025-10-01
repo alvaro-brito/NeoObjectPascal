@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -255,6 +256,10 @@ public class Interpreter extends NeoObjectPascalParserBaseVisitor<Object> {
 
     @Override
     public Object visitExpression(NeoObjectPascalParser.ExpressionContext ctx) {
+        if (ctx.javaBlock() != null) {
+            return visit(ctx.javaBlock());
+        }
+        
         if (ctx.primary() != null) {
             return visit(ctx.primary());
         }
@@ -373,19 +378,50 @@ public class Interpreter extends NeoObjectPascalParserBaseVisitor<Object> {
     }
 
     @Override
+    public Object visitJavaBlock(NeoObjectPascalParser.JavaBlockContext ctx) {
+        try {
+            // Extrai o código Java (remove as chaves)
+            String javaCode = ctx.JAVA_CODE().getText();
+            
+            // Coleta os parâmetros
+            List<Object> parameters = new ArrayList<>();
+            if (ctx.expressionList() != null) {
+                for (NeoObjectPascalParser.ExpressionContext expr : ctx.expressionList().expression()) {
+                    Object value = visit(expr);
+                    parameters.add(value);
+                }
+            }
+            
+            // Executa o código Java
+            return JavaExecutor.executeJavaCode(javaCode, parameters);
+            
+        } catch (Exception e) {
+            System.err.println("Erro ao executar bloco Java: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
     public Object visitUsesClause(NeoObjectPascalParser.UsesClauseContext ctx) {
         for (NeoObjectPascalParser.ModulePathContext modulePathContext : ctx.modulePath()) {
             String modulePath = getModulePath(modulePathContext);
-            String fileName = modulePathToFilePath(modulePath) + ".npas";
-            try {
-                CharStream input = CharStreams.fromFileName(fileName);
-                NeoObjectPascalLexer lexer = new NeoObjectPascalLexer(input);
-                CommonTokenStream tokens = new CommonTokenStream(lexer);
-                NeoObjectPascalParser parser = new NeoObjectPascalParser(tokens);
-                ParseTree tree = parser.program();
-                visit(tree);
-            } catch (IOException e) {
-                System.err.println("Erro ao carregar módulo " + fileName + ": " + e.getMessage());
+            
+            // Verifica se é uma biblioteca interna
+            if (modulePath.startsWith("internal.")) {
+                loadInternalLibrary(modulePath);
+            } else {
+                // Carrega módulo externo (comportamento original)
+                String fileName = modulePathToFilePath(modulePath) + ".npas";
+                try {
+                    CharStream input = CharStreams.fromFileName(fileName);
+                    NeoObjectPascalLexer lexer = new NeoObjectPascalLexer(input);
+                    CommonTokenStream tokens = new CommonTokenStream(lexer);
+                    NeoObjectPascalParser parser = new NeoObjectPascalParser(tokens);
+                    ParseTree tree = parser.program();
+                    visit(tree);
+                } catch (IOException e) {
+                    System.err.println("Erro ao carregar módulo " + fileName + ": " + e.getMessage());
+                }
             }
         }
         return null;
@@ -406,5 +442,36 @@ public class Interpreter extends NeoObjectPascalParserBaseVisitor<Object> {
         // Converte helpers.matematica para helpers/matematica
         String relativePath = modulePath.replace(".", "/");
         return baseDirectory + relativePath;
+    }
+    
+    private void loadInternalLibrary(String modulePath) {
+        // Remove o prefixo "internal." e obtém o nome da biblioteca
+        String libraryName = modulePath.substring("internal.".length());
+        String resourcePath = "/internal/" + libraryName + ".npas";
+        
+        try {
+            // Carrega o recurso do classpath
+            InputStream resourceStream = getClass().getResourceAsStream(resourcePath);
+            if (resourceStream == null) {
+                System.err.println("Biblioteca interna não encontrada: " + modulePath);
+                return;
+            }
+            
+            // Converte InputStream para CharStream
+            CharStream input = CharStreams.fromStream(resourceStream);
+            NeoObjectPascalLexer lexer = new NeoObjectPascalLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            NeoObjectPascalParser parser = new NeoObjectPascalParser(tokens);
+            ParseTree tree = parser.program();
+            
+            // Interpreta a biblioteca interna
+            visit(tree);
+            
+            // Fecha o stream
+            resourceStream.close();
+            
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar biblioteca interna " + modulePath + ": " + e.getMessage());
+        }
     }
 }

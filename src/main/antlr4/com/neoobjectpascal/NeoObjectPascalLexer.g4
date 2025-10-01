@@ -20,6 +20,7 @@ JSON_PARSE: 'JSON.parse';
 CSV_PARSE: 'CSV.parse';
 INTO: 'into';
 RETURN: 'return';
+JAVA: 'java';
 
 // Types
 TYPE_INTEGER: 'Integer';
@@ -34,6 +35,8 @@ COLON: ':';
 COMMA: ',';
 LPAREN: '(';
 RPAREN: ')';
+LBRACKET: '[';
+RBRACKET: ']';
 SEMI: ';';
 DOT: '.';
 MUL: '*';
@@ -54,7 +57,8 @@ STRING:
     '"' ( '\\' . | ~('"'|'\\') )* '"' |
     '\'' ( '\\' . | ~('\''|'\\') )* '\''
     ;
+JAVA_CODE: '{' ( ~[{}] | '{' ~[{}]* '}' )* '}';
 IDENTIFIER: [a-zA-Z_] [a-zA-Z_0-9]*;
 
 WS: [ \t\r\n]+ -> skip;
-COMMENT: '{' .*? '}' -> skip;
+COMMENT: '//' ~[\r\n]* -> skip;
